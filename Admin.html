@@ -1,102 +1,56 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - Key Generator</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            background: linear-gradient(145deg, #1a1a1a, #333);
-            color: #f4f4f4;
-        }
-        .container {
-            text-align: center;
-            background: #1e1e1e;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.4);
-            width: 300px;
-        }
-        h2 {
-            color: #e63946;
-            margin-bottom: 20px;
-            font-size: 24px;
-            letter-spacing: 1px;
-        }
-        input, button {
-            padding: 10px;
-            margin-top: 10px;
-            width: 100%;
-            font-size: 16px;
-        }
-        button {
-            background-color: #e63946;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #d62828;
-        }
-        #keyList {
-            margin-top: 20px;
-            color: #f1faee;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Key Generator</title>
+<link rel="stylesheet" href="admin.css">
 </head>
 <body>
-    <div class="container">
-        <h2>Admin Key Generator</h2>
-        <input type="number" id="keyDuration" placeholder="Duration (seconds)" />
-        <button onclick="generateKey()">Generate Key</button>
-        <div id="keyList"></div>
-    </div>
+    <div class="container">
+        <h2>Admin Key Generator</h2>
+        <input type="number" id="keyDuration" placeholder="Duration (seconds)" />
+        <button onclick="generateKey()">Generate Key</button>
+        <div id="keyList"></div>
+    </div>
 
-    <script>
-        function generateKey() {
-            // Generate a random key and expiration time
-            const newKey = Math.random().toString(36).substring(2, 8).toUpperCase();
-            const duration = parseInt(document.getElementById("keyDuration").value, 10);
+    <script>
+        function generateKey() {
+            // Generate a random key and expiration time
+            const newKey = Math.random().toString(36).substring(2, 8).toUpperCase();
+            const duration = parseInt(document.getElementById("keyDuration").value, 10);
 
-            if (isNaN(duration) || duration <= 0) {
-                alert("Please enter a valid duration in seconds.");
-                return;
-            }
+            if (isNaN(duration) || duration <= 0) {
+                alert("Please enter a valid duration in seconds.");
+                return;
+            }
 
-            const expirationTime = Date.now() + duration * 1000;
+            const expirationTime = Date.now() + duration * 1000;
 
-            // Retrieve existing keys from localStorage or create a new array
-            const keys = JSON.parse(localStorage.getItem("keys")) || [];
+            // Retrieve existing keys from localStorage or create a new array
+            const keys = JSON.parse(localStorage.getItem("keys")) || [];
 
-            // Add the new key and expiration time to the list
-            keys.push({ key: newKey, expiresAt: expirationTime });
-            localStorage.setItem("keys", JSON.stringify(keys));
+            // Add the new key and expiration time to the list
+            keys.push({ key: newKey, expiresAt: expirationTime });
+            localStorage.setItem("keys", JSON.stringify(keys));
 
-            alert(`New key generated: ${newKey} (expires in ${duration} seconds)`);
-            displayKeys();
-        }
+            alert(`New key generated: ${newKey} (expires in ${duration} seconds)`);
+            displayKeys();
+        }
 
-        function displayKeys() {
-            const keys = JSON.parse(localStorage.getItem("keys")) || [];
-            const keyList = document.getElementById("keyList");
-            keyList.innerHTML = "<h3>Active Keys:</h3>";
+        function displayKeys() {
+            const keys = JSON.parse(localStorage.getItem("keys")) || [];
+            const keyList = document.getElementById("keyList");
+            keyList.innerHTML = "<h3>Active Keys:</h3>";
 
-            keys.forEach((item, index) => {
-                const timeLeft = Math.max(0, Math.floor((item.expiresAt - Date.now()) / 1000));
-                keyList.innerHTML += `<p>${index + 1}. Key: ${item.key} - Expires in: ${timeLeft} seconds</p>`;
-            });
-        }
+            keys.forEach((item, index) => {
+                const timeLeft = Math.max(0, Math.floor((item.expiresAt - Date.now()) / 1000));
+                keyList.innerHTML += `<p>${index + 1}. Key: ${item.key} - Expires in: ${timeLeft} seconds</p>`;
+            });
+        }
 
-        // Display keys on page load
-        displayKeys();
-    </script>
+        // Display keys on page load
+        displayKeys();
+    </script>
 </body>
-</html>
+</html> 
