@@ -1,88 +1,46 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aviator Login</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            background: linear-gradient(145deg, #1a1a1a, #333);
-            color: #f4f4f4;
-        }
-        .container {
-            text-align: center;
-            background: #1e1e1e;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.4);
-            width: 300px;
-        }
-        h2 {
-            color: #e63946;
-            margin-bottom: 20px;
-            font-size: 24px;
-            letter-spacing: 1px;
-        }
-        input, button {
-            padding: 10px;
-            margin-top: 10px;
-            width: 100%;
-            font-size: 16px;
-        }
-        button {
-            background-color: #e63946;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #d62828;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aviator Login</title>
+<link rel="stylesheet" href="index.css">
 </head>
 <body>
-    <div class="container">
-        <h2>Aviator Login</h2>
-        <input type="text" id="loginKey" placeholder="Enter Access Key" />
-        <button onclick="login()">Login</button>
-    </div>
+    <div class="container">
+        <h2>Aviator Login</h2>
+        <input type="text" id="loginKey" placeholder="Enter Access Key" />
+        <button onclick="login()">Login</button>
+    </div>
 
-    <script>
-        function login() {
-            const inputKey = document.getElementById("loginKey").value;
-            const keys = JSON.parse(localStorage.getItem("keys")) || [];
-            const currentTime = Date.now();
+    <script>
+        function login() {
+            const inputKey = document.getElementById("loginKey").value;
+            const keys = JSON.parse(localStorage.getItem("keys")) || [];
+            const currentTime = Date.now();
 
-            // Check if any key matches the input and hasn't expired
-            const validKey = keys.find(item => item.key === inputKey && item.expiresAt > currentTime);
+            // Check if any key matches the input and hasn't expired
+            const validKey = keys.find(item => item.key === inputKey && item.expiresAt > currentTime);
 
-            if (validKey) {
-                alert("Login successful!");
-                window.location.href = "predictor.html";
-            } else {
-                alert("Invalid or expired key.");
-            }
-        }
+            if (validKey) {
+                alert("Login successful!");
+                window.location.href = "predictor.html";
+            } else {
+                alert("Invalid or expired key.");
+            }
+        }
 
-        // Remove expired keys from localStorage every time login page is loaded
-        function cleanUpExpiredKeys() {
-            const keys = JSON.parse(localStorage.getItem("keys")) || [];
-            const currentTime = Date.now();
-            const activeKeys = keys.filter(item => item.expiresAt > currentTime);
+        // Remove expired keys from localStorage every time login page is loaded
+        function cleanUpExpiredKeys() {
+            const keys = JSON.parse(localStorage.getItem("keys")) || [];
+            const currentTime = Date.now();
+            const activeKeys = keys.filter(item => item.expiresAt > currentTime);
 
-            // Update the localStorage with only active keys
-            localStorage.setItem("keys", JSON.stringify(activeKeys));
-        }
+            // Update the localStorage with only active keys
+            localStorage.setItem("keys", JSON.stringify(activeKeys));
+        }
 
-        cleanUpExpiredKeys(); // Clean up expired keys on page load
-    </script>
+        cleanUpExpiredKeys(); // Clean up expired keys on page load
+    </script>
 </body>
-</html>
+</html> 
