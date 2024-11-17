@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - Key Generator</title>
-<link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="admin.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
 </head>
 <body>
     <div class="container">
@@ -15,8 +17,20 @@
     </div>
 
     <script>
-        function generateKey() {
-            // Generate a random key and expiration time
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDMcG1Rv0auqNk42s1y37yQTnysHtBNMZ8",
+            authDomain: "aviator-predictor-bot-28258.firebaseapp.com",
+            projectId: "aviator-predictor-bot-28258",
+            storageBucket: "aviator-predictor-bot-28258.firebasestorage.app",
+            messagingSenderId: "662822465430",
+            appId: "1:662822465430:web:5637bf2fce6b95d49f37b7"
+        };
+        
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        async function generateKey() {
             const newKey = Math.random().toString(36).substring(2, 8).toUpperCase();
             const duration = parseInt(document.getElementById("keyDuration").value, 10);
 
@@ -27,25 +41,25 @@
 
             const expirationTime = Date.now() + duration * 1000;
 
-            // Retrieve existing keys from localStorage or create a new array
-            const keys = JSON.parse(localStorage.getItem("keys")) || [];
-
-            // Add the new key and expiration time to the list
-            keys.push({ key: newKey, expiresAt: expirationTime });
-            localStorage.setItem("keys", JSON.stringify(keys));
+            // Save the new key to Firebase
+            await db.collection("keys").add({
+                key: newKey,
+                expiresAt: expirationTime
+            });
 
             alert(`New key generated: ${newKey} (expires in ${duration} seconds)`);
             displayKeys();
         }
 
-        function displayKeys() {
-            const keys = JSON.parse(localStorage.getItem("keys")) || [];
+        async function displayKeys() {
             const keyList = document.getElementById("keyList");
             keyList.innerHTML = "<h3>Active Keys:</h3>";
 
-            keys.forEach((item, index) => {
-                const timeLeft = Math.max(0, Math.floor((item.expiresAt - Date.now()) / 1000));
-                keyList.innerHTML += `<p>${index + 1}. Key: ${item.key} - Expires in: ${timeLeft} seconds</p>`;
+            const snapshot = await db.collection("keys").get();
+            snapshot.forEach(doc => {
+                const keyData = doc.data();
+                const timeLeft = Math.max(0, Math.floor((keyData.expiresAt - Date.now()) / 1000));
+                keyList.innerHTML += `<p>Key: ${keyData.key} - Expires in: ${timeLeft} seconds</p>`;
             });
         }
 
@@ -53,4 +67,4 @@
         displayKeys();
     </script>
 </body>
-</html> 
+</html>
