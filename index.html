@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aviator Login</title>
-<link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="index.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
 </head>
 <body>
     <div class="container">
@@ -14,33 +16,38 @@
     </div>
 
     <script>
-        function login() {
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDMcG1Rv0auqNk42s1y37yQTnysHtBNMZ8",
+            authDomain: "aviator-predictor-bot-28258.firebaseapp.com",
+            projectId: "aviator-predictor-bot-28258",
+            storageBucket: "aviator-predictor-bot-28258.firebasestorage.app",
+            messagingSenderId: "662822465430",
+            appId: "1:662822465430:web:5637bf2fce6b95d49f37b7"
+        };
+
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        async function login() {
             const inputKey = document.getElementById("loginKey").value;
-            const keys = JSON.parse(localStorage.getItem("keys")) || [];
             const currentTime = Date.now();
 
             // Check if any key matches the input and hasn't expired
-            const validKey = keys.find(item => item.key === inputKey && item.expiresAt > currentTime);
+            const snapshot = await db.collection("keys").where("key", "==", inputKey).get();
 
-            if (validKey) {
-                alert("Login successful!");
-                window.location.href = "predictor.html";
+            if (!snapshot.empty) {
+                const validKey = snapshot.docs[0].data();
+                if (validKey.expiresAt > currentTime) {
+                    alert("Login successful!");
+                    window.location.href = "predictor.html";
+                } else {
+                    alert("The key has expired.");
+                }
             } else {
-                alert("Invalid or expired key.");
+                alert("Invalid key.");
             }
         }
-
-        // Remove expired keys from localStorage every time login page is loaded
-        function cleanUpExpiredKeys() {
-            const keys = JSON.parse(localStorage.getItem("keys")) || [];
-            const currentTime = Date.now();
-            const activeKeys = keys.filter(item => item.expiresAt > currentTime);
-
-            // Update the localStorage with only active keys
-            localStorage.setItem("keys", JSON.stringify(activeKeys));
-        }
-
-        cleanUpExpiredKeys(); // Clean up expired keys on page load
     </script>
 </body>
-</html> 
+</html>
